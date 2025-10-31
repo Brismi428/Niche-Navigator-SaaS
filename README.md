@@ -1,6 +1,6 @@
 # Niche Navigator
 
-A comprehensive Next.js 15+ SaaS accelerator built with modern web technologies. Get your SaaS application up and running in minutes with authentication, payments, analytics, and more. 
+A comprehensive Next.js 15+ SaaS accelerator built with modern web technologies. Get your SaaS application up and running in minutes with authentication, payments, analytics, and more.  
 
 ## ✨ Features
 
