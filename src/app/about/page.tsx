@@ -17,7 +17,7 @@ export default function AboutPage() {
           Building the Future of SaaS
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          We're on a mission to empower developers and entrepreneurs to build, launch, and scale their SaaS products faster than ever before.
+          We&apos;re on a mission to empower developers and entrepreneurs to build, launch, and scale their SaaS products faster than ever before.
         </p>
       </div>
 
@@ -84,10 +84,10 @@ export default function AboutPage() {
               Niche Navigator was born from the frustration of repeatedly building the same foundational features for every new SaaS project. Authentication, payments, user management, analytics—these are essential but time-consuming to implement correctly.
             </p>
             <p className="text-muted-foreground">
-              We realized that developers and entrepreneurs shouldn't have to reinvent the wheel every time they want to launch a new product. So we built Niche Navigator—a production-ready SaaS accelerator that handles all the boilerplate, so you can focus on what makes your product unique.
+              We realized that developers and entrepreneurs shouldn&apos;t have to reinvent the wheel every time they want to launch a new product. So we built Niche Navigator—a production-ready SaaS accelerator that handles all the boilerplate, so you can focus on what makes your product unique.
             </p>
             <p className="text-muted-foreground">
-              Today, Niche Navigator powers hundreds of successful SaaS applications, helping founders go from idea to launch in days instead of months. Built with Next.js 15, TypeScript, Supabase, and Stripe, it represents the best practices we've learned from building and scaling SaaS products over the years.
+              Today, Niche Navigator powers hundreds of successful SaaS applications, helping founders go from idea to launch in days instead of months. Built with Next.js 15, TypeScript, Supabase, and Stripe, it represents the best practices we&apos;ve learned from building and scaling SaaS products over the years.
             </p>
           </CardContent>
         </Card>
@@ -131,7 +131,7 @@ export default function AboutPage() {
       <div className="text-center mb-16">
         <h2 className="text-3xl font-bold mb-4">Meet the Team</h2>
         <p className="text-muted-foreground mb-8 max-w-2xl mx-auto">
-          We're a small but mighty team of developers, designers, and product enthusiasts dedicated to building the best SaaS starter kit.
+          We&apos;re a small but mighty team of developers, designers, and product enthusiasts dedicated to building the best SaaS starter kit.
         </p>
         <div className="grid gap-6 md:grid-cols-3 max-w-4xl mx-auto">
           <Card>

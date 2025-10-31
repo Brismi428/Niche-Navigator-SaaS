@@ -18,10 +18,10 @@ export default function ContactPage() {
       <div className="text-center mb-16">
         <Badge className="mb-4">Contact Us</Badge>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">
-          Let's Start a Conversation
+          Let&apos;s Start a Conversation
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-          Have questions? Need help? Want to partner with us? We'd love to hear from you!
+          Have questions? Need help? Want to partner with us? We&apos;d love to hear from you!
         </p>
       </div>
 
@@ -94,7 +94,7 @@ export default function ContactPage() {
             <CardHeader>
               <CardTitle className="text-2xl">Send Us a Message</CardTitle>
               <CardDescription>
-                Fill out the form below and we'll get back to you as soon as possible
+                Fill out the form below and we&apos;ll get back to you as soon as possible
               </CardDescription>
             </CardHeader>
             <CardContent>
