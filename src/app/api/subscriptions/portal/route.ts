@@ -4,9 +4,23 @@ import { createClient } from '@/lib/supabase/server';
 import { getUser } from '@/lib/auth/server';
 import { apiRateLimit } from '@/lib/rate-limit';
 import { getClientIp } from '@/lib/get-client-ip';
+import { handleCorsPreflightRequest, validateCors } from '@/lib/cors';
+
+// SECURITY: Handle CORS preflight requests
+export async function OPTIONS(request: NextRequest) {
+  return handleCorsPreflightRequest(request);
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // SECURITY: Validate CORS to prevent unauthorized cross-origin requests
+    const { allowed, headers: corsHeaders } = validateCors(request);
+    if (!allowed) {
+      return NextResponse.json(
+        { error: 'CORS policy violation: Origin not allowed' },
+        { status: 403 }
+      );
+    }
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
@@ -70,9 +84,12 @@ export async function POST(request: NextRequest) {
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscriptions`,
     });
 
-    return NextResponse.json({ 
-      url: portalSession.url 
-    });
+    return NextResponse.json(
+      {
+        url: portalSession.url
+      },
+      { headers: corsHeaders }
+    );
 
   } catch (error) {
     console.error('Error creating portal session:', error);

@@ -56,6 +56,29 @@ const nextConfig: NextConfig = {
           }] : []),
         ],
       },
+      // SECURITY: CORS headers for API routes
+      // Note: API routes should use the withCors() helper for fine-grained control
+      {
+        source: '/api/:path*',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Credentials',
+            value: 'true',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE, OPTIONS',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
+          },
+          {
+            key: 'Access-Control-Max-Age',
+            value: '86400',
+          },
+        ],
+      },
     ];
   },
   async redirects() {
