@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getUser } from '@/lib/auth/server';
 import { apiRateLimit } from '@/lib/rate-limit';
 import { getClientIp } from '@/lib/get-client-ip';
+import { checkoutRequestSchema, validateData } from '@/lib/validations/subscription';
 
 export async function POST(request: NextRequest) {
   try {
@@ -47,13 +48,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { priceId } = await request.json();
-    if (!priceId) {
-      return NextResponse.json(
-        { error: 'Price ID is required' },
-        { status: 400 }
-      );
-    }
+    // SECURITY: Validate and sanitize input data
+    const body = await request.json();
+    const validatedData = validateData(
+      checkoutRequestSchema,
+      body,
+      'Invalid checkout request'
+    );
+
+    const { priceId } = validatedData;
 
     const supabase = await createClient();
 

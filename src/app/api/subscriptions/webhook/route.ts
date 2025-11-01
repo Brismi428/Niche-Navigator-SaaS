@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { getSubscriptionPeriodStart, getSubscriptionPeriodEnd, getInvoiceSubscriptionId } from '@/types/stripe';
+import { webhookMetadataSchema, validateData } from '@/lib/validations/subscription';
 
 export async function POST(request: NextRequest) {
   // Check if Stripe is configured
@@ -73,14 +74,20 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         if (session.mode === 'subscription' && session.subscription) {
           // Get the subscription details
           const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
-          const userId = session.metadata?.user_id;
-          const productId = session.metadata?.product_id;
 
-          if (userId && productId) {
+          // SECURITY: Validate webhook metadata
+          try {
+            const metadata = validateData(
+              webhookMetadataSchema,
+              session.metadata,
+              'Invalid webhook metadata'
+            );
+
+            const { user_id: userId, product_id: productId } = metadata;
             // Get period dates using helper functions
             const periodStart = getSubscriptionPeriodStart(subscription);
             const periodEnd = getSubscriptionPeriodEnd(subscription);
@@ -104,6 +111,9 @@ export async function POST(request: NextRequest) {
             if (error) {
               console.error('Error creating subscription record:', error);
             }
+          } catch (validationError) {
+            console.error('Webhook metadata validation failed:', validationError);
+            // Continue processing - don't break webhook handling for validation errors
           }
         }
         break;
