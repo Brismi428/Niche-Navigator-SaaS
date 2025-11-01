@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { authRateLimit } from '@/lib/rate-limit'
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
@@ -43,9 +44,22 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
+  // Rate limit authentication attempts
+  if (pathname === '/login' || pathname === '/signup' || pathname === '/forgot-password') {
+    const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'unknown'
+    const result = await authRateLimit.check(10, ip) // 10 attempts per minute
+
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      )
+    }
+  }
+
   // Protected routes
   const protectedRoutes = ['/dashboard', '/settings', '/profile']
-  const isProtectedRoute = protectedRoutes.some(route => 
+  const isProtectedRoute = protectedRoutes.some(route =>
     pathname.startsWith(route)
   )
 
@@ -76,5 +90,6 @@ export const config = {
     '/profile/:path*',
     '/login',
     '/signup',
+    '/forgot-password',
   ],
 }
