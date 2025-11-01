@@ -3,20 +3,10 @@ import Stripe from 'stripe';
 import { createClient } from '@/lib/supabase/server';
 import { getUser } from '@/lib/auth/server';
 import { apiRateLimit } from '@/lib/rate-limit';
+import { getClientIp } from '@/lib/get-client-ip';
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
-    const ip = request.headers.get('x-forwarded-for') ?? request.headers.get('x-real-ip') ?? 'unknown';
-    const result = await apiRateLimit.check(30, ip); // 30 requests per minute
-
-    if (!result.success) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429, headers: { 'Retry-After': '60' } }
-      );
-    }
-
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
       return NextResponse.json(
@@ -27,12 +17,33 @@ export async function POST(request: NextRequest) {
 
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-    // Get authenticated user
+    // Get authenticated user first
     const user = await getUser();
     if (!user) {
       return NextResponse.json(
         { error: 'Authentication required' },
         { status: 401 }
+      );
+    }
+
+    // Rate limiting by IP (secure extraction)
+    const ip = getClientIp(request);
+    const ipResult = await apiRateLimit.check(30, ip); // 30 requests per minute per IP
+
+    if (!ipResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': '60' } }
+      );
+    }
+
+    // Additional rate limiting by user ID for defense-in-depth
+    const userResult = await apiRateLimit.check(30, user.id); // 30 requests per minute per user
+
+    if (!userResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests' },
+        { status: 429, headers: { 'Retry-After': '60' } }
       );
     }
 

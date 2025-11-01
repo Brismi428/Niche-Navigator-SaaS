@@ -5,24 +5,40 @@ type RateLimitOptions = {
   uniqueTokenPerInterval: number;
 };
 
+/**
+ * In-memory rate limiter using LRU cache
+ *
+ * SECURITY NOTE: This implementation has limitations:
+ * 1. State is lost on server restarts/deployments
+ * 2. In serverless environments (Vercel), each instance has independent state
+ * 3. Not suitable for distributed systems or production at scale
+ *
+ * For production use, consider:
+ * - Upstash Rate Limit (https://upstash.com/docs/oss/sdks/ts/ratelimit/overview)
+ * - Vercel KV with rate limiting
+ * - Redis-based rate limiting
+ */
 export function rateLimit(options: RateLimitOptions) {
-  const tokenCache = new LRUCache<string, number[]>({
+  // Use integer counter instead of array to reduce race condition window
+  const tokenCache = new LRUCache<string, number>({
     max: options.uniqueTokenPerInterval,
     ttl: options.interval,
   });
 
   return {
     check: async (limit: number, token: string) => {
-      const tokenCount = tokenCache.get(token) || [0];
-      if (tokenCount[0] === 0) {
-        tokenCache.set(token, [1]);
-      } else if (tokenCount[0] < limit) {
-        tokenCount[0]++;
-        tokenCache.set(token, tokenCount);
-      } else {
+      // Get current count (defaults to 0 if not present)
+      const current = tokenCache.get(token) ?? 0;
+
+      // Check if limit exceeded
+      if (current >= limit) {
         return { success: false, remaining: 0 };
       }
-      return { success: true, remaining: limit - tokenCount[0] };
+
+      // Increment counter (more atomic than array mutation)
+      tokenCache.set(token, current + 1);
+
+      return { success: true, remaining: limit - current - 1 };
     },
   };
 }
