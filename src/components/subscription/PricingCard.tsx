@@ -11,13 +11,24 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
+interface PlanFeatures {
+  max_users?: string;
+  api_calls_per_month?: string;
+  storage_gb?: string;
+  support_level?: string;
+  custom_branding?: string;
+  advanced_analytics?: string;
+  priority_support?: string;
+  sso_integration?: string;
+}
+
 interface Plan {
   id: string;
   name: string;
   description: string;
   amount: number;
   stripe_price_id: string;
-  features: Record<string, any>;
+  features: PlanFeatures;
 }
 
 interface PricingCardProps {
@@ -41,8 +52,8 @@ export function PricingCard({
     return (amount / 100).toFixed(2);
   };
 
-  const getFeatureList = (features: Record<string, any>) => {
-    const featureList = [];
+  const getFeatureList = (features: PlanFeatures) => {
+    const featureList: string[] = [];
 
     if (features.max_users) {
       const users = features.max_users === '-1' ? 'Unlimited' : features.max_users;

@@ -1,7 +1,18 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useAuth } from './AuthContext';
+
+interface PlanFeatures {
+  max_users?: string;
+  api_calls_per_month?: string;
+  storage_gb?: string;
+  support_level?: string;
+  custom_branding?: string;
+  advanced_analytics?: string;
+  priority_support?: string;
+  sso_integration?: string;
+}
 
 interface Plan {
   id: string;
@@ -10,7 +21,7 @@ interface Plan {
   stripe_product_id: string;
   amount: number;
   stripe_price_id: string;
-  features: Record<string, any>;
+  features: PlanFeatures;
 }
 
 interface Subscription {
@@ -58,7 +69,7 @@ export function SubscriptionProvider({
     }
   };
 
-  const fetchSubscription = async () => {
+  const fetchSubscription = useCallback(async () => {
     if (!user) {
       setSubscription(null);
       setLoading(false);
@@ -84,7 +95,7 @@ export function SubscriptionProvider({
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   const refetch = async () => {
     setLoading(true);
@@ -137,7 +148,7 @@ export function SubscriptionProvider({
 
   useEffect(() => {
     fetchSubscription();
-  }, [user]);
+  }, [user, fetchSubscription]);
 
   return (
     <SubscriptionContext.Provider

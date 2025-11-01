@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
 import { Mail, X, RefreshCw } from 'lucide-react'
-import { createBrowserSupabaseClient } from '@/lib/supabase/client'
+import { createClient } from '@/lib/supabase/client'
 
 /**
  * EmailConfirmationBanner Component
@@ -57,7 +57,7 @@ export default function EmailConfirmationBanner() {
     setMessage(null)
 
     try {
-      const supabase = createBrowserSupabaseClient()
+      const supabase = createClient()
 
       // Resend confirmation email using Supabase Auth
       const { error } = await supabase.auth.resend({
