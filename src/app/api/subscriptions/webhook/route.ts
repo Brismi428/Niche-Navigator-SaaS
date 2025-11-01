@@ -18,13 +18,49 @@ export async function POST(request: NextRequest) {
   const body = await request.text();
   const signature = request.headers.get('stripe-signature')!;
 
+  // SECURITY: Validate webhook origin
+  // In production, you can optionally restrict to known Stripe IPs
+  // For now, we rely on signature verification which is cryptographically secure
+  const userAgent = request.headers.get('user-agent') || '';
+  if (!userAgent.includes('Stripe')) {
+    console.warn('Webhook request with non-Stripe user agent');
+    // Note: We still allow it if signature is valid, but log suspicious activity
+  }
+
   let event: Stripe.Event;
 
   try {
+    // SECURITY: Stripe's constructEvent internally validates:
+    // 1. Signature authenticity (HMAC-SHA256)
+    // 2. Timestamp freshness (rejects events >5 minutes old by default)
+    // This prevents both tampering and replay attacks
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
-    console.error('Webhook signature verification failed:', err);
+    const error = err as Error;
+    console.error('Webhook signature verification failed:', error.message);
+
+    // Check if it's a timestamp error (replay attack attempt)
+    if (error.message.includes('timestamp')) {
+      return NextResponse.json(
+        { error: 'Webhook timestamp too old - possible replay attack' },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
+  }
+
+  // SECURITY: Additional timestamp validation (defense-in-depth)
+  // Stripe events include a 'created' timestamp
+  const eventAge = Date.now() / 1000 - event.created;
+  const MAX_EVENT_AGE = 300; // 5 minutes in seconds
+
+  if (eventAge > MAX_EVENT_AGE) {
+    console.warn(`Webhook event too old: ${eventAge}s (max: ${MAX_EVENT_AGE}s)`);
+    return NextResponse.json(
+      { error: 'Webhook event timestamp too old' },
+      { status: 400 }
+    );
   }
 
   // Create Supabase client with service role for webhook operations
