@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { NavigationProvider } from "@/contexts/NavigationContext";
+import { SubscriptionProvider } from "@/contexts/SubscriptionContext";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { APP_CONFIG } from "@/lib/constants";
@@ -71,13 +72,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <AuthProvider>
-            <NavigationProvider>
-              <div className="relative flex min-h-screen flex-col">
-                <Header />
-                <main className="flex-1">{children}</main>
-                <Footer />
-              </div>
-            </NavigationProvider>
+            <SubscriptionProvider>
+              <NavigationProvider>
+                <div className="relative flex min-h-screen flex-col">
+                  <Header />
+                  <main className="flex-1">{children}</main>
+                  <Footer />
+                </div>
+              </NavigationProvider>
+            </SubscriptionProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

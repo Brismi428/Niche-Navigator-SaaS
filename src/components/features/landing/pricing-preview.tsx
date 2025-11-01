@@ -109,7 +109,7 @@ export function PricingPreview() {
                   variant={tier.popular ? 'default' : 'outline'}
                   asChild
                 >
-                  <Link href={tier.name === 'Enterprise' ? '/contact' : '/auth/signup'}>
+                  <Link href={tier.name === 'Enterprise' ? '/contact' : '/subscriptions'}>
                     {tier.cta}
                   </Link>
                 </Button>
