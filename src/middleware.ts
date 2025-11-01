@@ -4,6 +4,16 @@ import { authRateLimit } from '@/lib/rate-limit'
 import { getClientIp } from '@/lib/get-client-ip'
 
 export async function middleware(request: NextRequest) {
+  // SECURITY: Force HTTPS in production
+  const isProduction = process.env.NODE_ENV === 'production';
+  const url = request.nextUrl;
+
+  if (isProduction && url.protocol === 'http:') {
+    // Redirect HTTP to HTTPS
+    url.protocol = 'https:';
+    return NextResponse.redirect(url, { status: 301 }); // Permanent redirect
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,

@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
     },
   },
   async headers() {
+    const isProduction = process.env.NODE_ENV === 'production';
+
     return [
       {
         source: '/(.*)',
@@ -47,6 +49,11 @@ const nextConfig: NextConfig = {
               "upgrade-insecure-requests"
             ].join('; ')
           },
+          // SECURITY: HSTS header - only enable in production
+          ...(isProduction ? [{
+            key: 'Strict-Transport-Security',
+            value: 'max-age=63072000; includeSubDomains; preload'
+          }] : []),
         ],
       },
     ];
