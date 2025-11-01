@@ -43,3 +43,10 @@ next-env.d.ts
 
 .claude
 .playwright-mcp
+
+# Stripe CLI
+stripe.exe
+stripe_cli.zip
+
+# Misc
+nul
