@@ -5,6 +5,15 @@ import { getUser } from '@/lib/auth/server';
 import { apiRateLimit } from '@/lib/rate-limit';
 import { getClientIp } from '@/lib/get-client-ip';
 import { handleCorsPreflightRequest, validateCors } from '@/lib/cors';
+import { createRequestLogger } from '@/lib/logger';
+import {
+  handleApiError,
+  AuthenticationError,
+  ValidationError,
+  RateLimitError,
+  ServiceUnavailableError,
+  CorsViolationError,
+} from '@/lib/error-handler';
 
 // SECURITY: Handle CORS preflight requests
 export async function OPTIONS(request: NextRequest) {
@@ -12,20 +21,23 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRequestLogger(request);
+
   try {
+    logger.info('Customer portal session creation started');
+
     // SECURITY: Validate CORS to prevent unauthorized cross-origin requests
     const { allowed, headers: corsHeaders } = validateCors(request);
     if (!allowed) {
-      return NextResponse.json(
-        { error: 'CORS policy violation: Origin not allowed' },
-        { status: 403 }
-      );
+      logger.security('CORS policy violation detected');
+      throw new CorsViolationError('Origin not allowed');
     }
+
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        { error: 'Stripe is not configured. Please set up Stripe to use subscriptions.' },
-        { status: 503 }
+      logger.error('Stripe not configured');
+      throw new ServiceUnavailableError(
+        'Stripe is not configured. Please set up Stripe to use subscriptions.'
       );
     }
 
@@ -34,31 +46,27 @@ export async function POST(request: NextRequest) {
     // Get authenticated user first
     const user = await getUser();
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      logger.security('Unauthenticated portal access attempt');
+      throw new AuthenticationError();
     }
+
+    logger.info('User authenticated', { userId: user.id });
 
     // Rate limiting by IP (secure extraction)
     const ip = getClientIp(request);
     const ipResult = await apiRateLimit.check(30, ip); // 30 requests per minute per IP
 
     if (!ipResult.success) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429, headers: { 'Retry-After': '60' } }
-      );
+      logger.warn('Rate limit exceeded (IP)', { ip, userId: user.id });
+      throw new RateLimitError();
     }
 
     // Additional rate limiting by user ID for defense-in-depth
     const userResult = await apiRateLimit.check(30, user.id); // 30 requests per minute per user
 
     if (!userResult.success) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429, headers: { 'Retry-After': '60' } }
-      );
+      logger.warn('Rate limit exceeded (User)', { userId: user.id });
+      throw new RateLimitError();
     }
 
     const supabase = await createClient();
@@ -72,9 +80,9 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (subscriptionError || !subscription?.stripe_customer_id) {
-      return NextResponse.json(
-        { error: 'No active subscription found. Please subscribe to a plan first.' },
-        { status: 400 }
+      logger.warn('User attempted portal access without subscription', { userId: user.id });
+      throw new ValidationError(
+        'No active subscription found. Please subscribe to a plan first.'
       );
     }
 
@@ -82,6 +90,11 @@ export async function POST(request: NextRequest) {
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: subscription.stripe_customer_id,
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscriptions`,
+    });
+
+    logger.info('Portal session created successfully', {
+      userId: user.id,
+      portalSessionId: portalSession.id,
     });
 
     return NextResponse.json(
@@ -92,10 +105,11 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Error creating portal session:', error);
-    return NextResponse.json(
-      { error: 'Failed to create portal session' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      requestId: logger['defaultContext']?.requestId as string,
+      userId: undefined, // User might not be authenticated
+      method: request.method,
+      path: new URL(request.url).pathname,
+    });
   }
 }

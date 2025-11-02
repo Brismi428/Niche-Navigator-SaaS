@@ -3,10 +3,14 @@ import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { getSubscriptionPeriodStart, getSubscriptionPeriodEnd, getInvoiceSubscriptionId } from '@/types/stripe';
 import { webhookMetadataSchema, validateData } from '@/lib/validations/subscription';
+import { createRequestLogger } from '@/lib/logger';
 
 export async function POST(request: NextRequest) {
+  const logger = createRequestLogger(request);
+
   // Check if Stripe is configured
   if (!process.env.STRIPE_SECRET_KEY || !process.env.STRIPE_WEBHOOK_SECRET) {
+    logger.error('Stripe webhook not configured');
     return NextResponse.json(
       { error: 'Stripe is not configured. Webhook processing is disabled.' },
       { status: 503 }
@@ -24,7 +28,7 @@ export async function POST(request: NextRequest) {
   // For now, we rely on signature verification which is cryptographically secure
   const userAgent = request.headers.get('user-agent') || '';
   if (!userAgent.includes('Stripe')) {
-    console.warn('Webhook request with non-Stripe user agent');
+    logger.security('Webhook request with non-Stripe user agent', { userAgent });
     // Note: We still allow it if signature is valid, but log suspicious activity
   }
 
@@ -38,10 +42,11 @@ export async function POST(request: NextRequest) {
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
   } catch (err) {
     const error = err as Error;
-    console.error('Webhook signature verification failed:', error.message);
+    logger.error('Webhook signature verification failed', undefined, error);
 
     // Check if it's a timestamp error (replay attack attempt)
     if (error.message.includes('timestamp')) {
+      logger.security('Possible replay attack detected - timestamp too old');
       return NextResponse.json(
         { error: 'Webhook timestamp too old - possible replay attack' },
         { status: 400 }
@@ -51,13 +56,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 });
   }
 
+  logger.info('Webhook signature verified', { eventType: event.type, eventId: event.id });
+
   // SECURITY: Additional timestamp validation (defense-in-depth)
   // Stripe events include a 'created' timestamp
   const eventAge = Date.now() / 1000 - event.created;
   const MAX_EVENT_AGE = 300; // 5 minutes in seconds
 
   if (eventAge > MAX_EVENT_AGE) {
-    console.warn(`Webhook event too old: ${eventAge}s (max: ${MAX_EVENT_AGE}s)`);
+    logger.security('Webhook event timestamp too old', { eventAge, maxAge: MAX_EVENT_AGE });
     return NextResponse.json(
       { error: 'Webhook event timestamp too old' },
       { status: 400 }
@@ -109,10 +116,12 @@ export async function POST(request: NextRequest) {
               });
 
             if (error) {
-              console.error('Error creating subscription record:', error);
+              logger.error('Error creating subscription record', { eventType: event.type }, error);
+            } else {
+              logger.info('Subscription record created', { eventType: event.type, userId });
             }
           } catch (validationError) {
-            console.error('Webhook metadata validation failed:', validationError);
+            logger.warn('Webhook metadata validation failed', { eventType: event.type }, validationError);
             // Continue processing - don't break webhook handling for validation errors
           }
         }
@@ -155,7 +164,7 @@ export async function POST(request: NextRequest) {
           if (!priceError && priceData) {
             updateData.product_id = priceData.product_id;
           } else {
-            console.error('Error finding product for price:', stripePriceId, priceError);
+            logger.error('Error finding product for price', { stripePriceId }, priceError);
           }
         }
 
@@ -165,7 +174,7 @@ export async function POST(request: NextRequest) {
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
-          console.error('Error updating subscription:', error);
+          logger.error('Error updating subscription', { eventType: event.type, subscriptionId: subscription.id }, error);
         }
         break;
       }
@@ -183,7 +192,7 @@ export async function POST(request: NextRequest) {
           .eq('stripe_subscription_id', subscription.id);
 
         if (error) {
-          console.error('Error canceling subscription:', error);
+          logger.error('Error canceling subscription', { eventType: event.type, subscriptionId: subscription.id }, error);
         }
         break;
       }
@@ -203,7 +212,7 @@ export async function POST(request: NextRequest) {
             .eq('stripe_subscription_id', subscriptionId);
 
           if (error) {
-            console.error('Error updating subscription on payment success:', error);
+            logger.error('Error updating subscription on payment success', { eventType: event.type }, error);
           }
         }
         break;
@@ -224,19 +233,20 @@ export async function POST(request: NextRequest) {
             .eq('stripe_subscription_id', subscriptionId);
 
           if (error) {
-            console.error('Error updating subscription on payment failure:', error);
+            logger.error('Error updating subscription on payment failure', { eventType: event.type }, error);
           }
         }
         break;
       }
 
       default:
-        console.log(`Unhandled event type: ${event.type}`);
+        logger.info('Unhandled event type', { eventType: event.type });
     }
 
+    logger.info('Webhook processed successfully', { eventType: event.type, eventId: event.id });
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error('Error processing webhook:', error);
+    logger.error('Error processing webhook', { eventType: event?.type }, error);
     return NextResponse.json(
       { error: 'Webhook processing failed' },
       { status: 500 }

@@ -7,6 +7,15 @@ import { getClientIp } from '@/lib/get-client-ip';
 import { checkoutRequestSchema, validateData } from '@/lib/validations/subscription';
 import { handleCorsPreflightRequest } from '@/lib/cors';
 import { validateCors } from '@/lib/cors';
+import { createRequestLogger } from '@/lib/logger';
+import {
+  handleApiError,
+  AuthenticationError,
+  ValidationError,
+  RateLimitError,
+  ServiceUnavailableError,
+  CorsViolationError,
+} from '@/lib/error-handler';
 
 // SECURITY: Handle CORS preflight requests
 export async function OPTIONS(request: NextRequest) {
@@ -14,20 +23,23 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  const logger = createRequestLogger(request);
+
   try {
+    logger.info('Checkout session creation started');
+
     // SECURITY: Validate CORS to prevent unauthorized cross-origin requests
     const { allowed, headers: corsHeaders } = validateCors(request);
     if (!allowed) {
-      return NextResponse.json(
-        { error: 'CORS policy violation: Origin not allowed' },
-        { status: 403 }
-      );
+      logger.security('CORS policy violation detected');
+      throw new CorsViolationError('Origin not allowed');
     }
+
     // Check if Stripe is configured
     if (!process.env.STRIPE_SECRET_KEY) {
-      return NextResponse.json(
-        { error: 'Stripe is not configured. Please set up Stripe to use subscriptions.' },
-        { status: 503 }
+      logger.error('Stripe not configured');
+      throw new ServiceUnavailableError(
+        'Stripe is not configured. Please set up Stripe to use subscriptions.'
       );
     }
 
@@ -36,40 +48,44 @@ export async function POST(request: NextRequest) {
     // Get authenticated user first
     const user = await getUser();
     if (!user) {
-      return NextResponse.json(
-        { error: 'Authentication required' },
-        { status: 401 }
-      );
+      logger.security('Unauthenticated checkout attempt');
+      throw new AuthenticationError();
     }
+
+    logger.info('User authenticated', { userId: user.id });
 
     // Rate limiting by IP (secure extraction)
     const ip = getClientIp(request);
     const ipResult = await apiRateLimit.check(30, ip); // 30 requests per minute per IP
 
     if (!ipResult.success) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429, headers: { 'Retry-After': '60' } }
-      );
+      logger.warn('Rate limit exceeded (IP)', { ip, userId: user.id });
+      throw new RateLimitError();
     }
 
     // Additional rate limiting by user ID for defense-in-depth
     const userResult = await apiRateLimit.check(30, user.id); // 30 requests per minute per user
 
     if (!userResult.success) {
-      return NextResponse.json(
-        { error: 'Too many requests' },
-        { status: 429, headers: { 'Retry-After': '60' } }
-      );
+      logger.warn('Rate limit exceeded (User)', { userId: user.id });
+      throw new RateLimitError();
     }
 
     // SECURITY: Validate and sanitize input data
     const body = await request.json();
-    const validatedData = validateData(
-      checkoutRequestSchema,
-      body,
-      'Invalid checkout request'
-    );
+    let validatedData;
+    try {
+      validatedData = validateData(
+        checkoutRequestSchema,
+        body,
+        'Invalid checkout request'
+      );
+    } catch (error) {
+      logger.warn('Checkout validation failed', { userId: user.id });
+      throw new ValidationError(
+        error instanceof Error ? error.message : 'Invalid checkout request'
+      );
+    }
 
     const { priceId } = validatedData;
 
@@ -83,10 +99,8 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (priceError || !price) {
-      return NextResponse.json(
-        { error: 'Invalid price ID' },
-        { status: 400 }
-      );
+      logger.warn('Invalid price ID provided', { userId: user.id, priceId });
+      throw new ValidationError('Invalid price ID');
     }
 
     // Check if user already has an active subscription
@@ -98,15 +112,15 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingSubscription) {
-      return NextResponse.json(
-        { error: 'You already have an active subscription. Use the customer portal to manage it.' },
-        { status: 400 }
+      logger.warn('User attempted checkout with existing subscription', { userId: user.id });
+      throw new ValidationError(
+        'You already have an active subscription. Use the customer portal to manage it.'
       );
     }
 
     // Create or get Stripe customer
     let customerId: string;
-    
+
     // Check if user already has a Stripe customer ID
     const { data: existingCustomer } = await supabase
       .from('subscriptions')
@@ -117,6 +131,7 @@ export async function POST(request: NextRequest) {
 
     if (existingCustomer?.stripe_customer_id) {
       customerId = existingCustomer.stripe_customer_id;
+      logger.debug('Using existing Stripe customer', { userId: user.id, customerId });
     } else {
       // Create new Stripe customer
       const customer = await stripe.customers.create({
@@ -126,6 +141,7 @@ export async function POST(request: NextRequest) {
         },
       });
       customerId = customer.id;
+      logger.info('Created new Stripe customer', { userId: user.id, customerId });
     }
 
     // Create Stripe checkout session
@@ -147,6 +163,11 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    logger.info('Checkout session created successfully', {
+      userId: user.id,
+      sessionId: session.id,
+    });
+
     return NextResponse.json(
       {
         url: session.url,
@@ -156,10 +177,11 @@ export async function POST(request: NextRequest) {
     );
 
   } catch (error) {
-    console.error('Error creating checkout session:', error);
-    return NextResponse.json(
-      { error: 'Failed to create checkout session' },
-      { status: 500 }
-    );
+    return handleApiError(error, {
+      requestId: logger['defaultContext']?.requestId as string,
+      userId: undefined, // User might not be authenticated
+      method: request.method,
+      path: new URL(request.url).pathname,
+    });
   }
 }
