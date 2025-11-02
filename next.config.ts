@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // SECURITY: Request body size limits to prevent DoS attacks
+  experimental: {
+    // Limit request body size for API routes (1MB default)
+    // Prevents DoS attacks via large payloads
+    serverActions: {
+      bodySizeLimit: '2mb', // Server Actions can be slightly larger (forms, etc.)
+    },
+  },
   turbopack: {
     rules: {
       '*.svg': {

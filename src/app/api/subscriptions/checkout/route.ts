@@ -8,6 +8,7 @@ import { checkoutRequestSchema, validateData } from '@/lib/validations/subscript
 import { handleCorsPreflightRequest } from '@/lib/cors';
 import { validateCors } from '@/lib/cors';
 import { createRequestLogger } from '@/lib/logger';
+import { enforceRequestSizeLimit, SIZE_LIMITS } from '@/lib/request-size-limit';
 import {
   handleApiError,
   AuthenticationError,
@@ -23,6 +24,10 @@ export async function OPTIONS(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
+  // SECURITY: Enforce request size limit (1MB for API routes)
+  const sizeCheck = enforceRequestSizeLimit(request, SIZE_LIMITS.API_ROUTE);
+  if (sizeCheck) return sizeCheck;
+
   const logger = createRequestLogger(request);
 
   try {

@@ -4,8 +4,13 @@ import { createClient } from '@supabase/supabase-js';
 import { getSubscriptionPeriodStart, getSubscriptionPeriodEnd, getInvoiceSubscriptionId } from '@/types/stripe';
 import { webhookMetadataSchema, validateData } from '@/lib/validations/subscription';
 import { createRequestLogger } from '@/lib/logger';
+import { enforceRequestSizeLimit, SIZE_LIMITS } from '@/lib/request-size-limit';
 
 export async function POST(request: NextRequest) {
+  // SECURITY: Enforce request size limit (2MB for webhooks - can have batch events)
+  const sizeCheck = enforceRequestSizeLimit(request, SIZE_LIMITS.WEBHOOK);
+  if (sizeCheck) return sizeCheck;
+
   const logger = createRequestLogger(request);
 
   // Check if Stripe is configured
