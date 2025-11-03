@@ -178,9 +178,22 @@ export default function ContentGenerationModal({
               <div className="relative">
                 <div
                   id="generated-content"
-                  className="min-h-[400px] max-h-[600px] overflow-y-auto p-6 border rounded-md bg-background prose prose-slate dark:prose-invert max-w-none"
+                  className="min-h-[400px] max-h-[600px] overflow-y-auto overflow-x-hidden p-6 border rounded-md bg-background prose prose-slate dark:prose-invert max-w-none prose-headings:break-words prose-p:break-words"
                 >
-                  <ReactMarkdown>{generatedContent}</ReactMarkdown>
+                  <ReactMarkdown
+                    components={{
+                      h1: ({...props}) => <h1 className="text-3xl font-bold mb-4" {...props} />,
+                      h2: ({...props}) => <h2 className="text-2xl font-bold mt-6 mb-3" {...props} />,
+                      h3: ({...props}) => <h3 className="text-xl font-bold mt-4 mb-2" {...props} />,
+                      p: ({...props}) => <p className="mb-4 break-words" {...props} />,
+                      ul: ({...props}) => <ul className="list-disc ml-6 mb-4 space-y-2" {...props} />,
+                      ol: ({...props}) => <ol className="list-decimal ml-6 mb-4 space-y-2" {...props} />,
+                      li: ({...props}) => <li className="break-words" {...props} />,
+                      strong: ({...props}) => <strong className="font-bold" {...props} />,
+                    }}
+                  >
+                    {generatedContent}
+                  </ReactMarkdown>
                 </div>
               </div>
               <Button onClick={handleClose} variant="default" className="w-full">
