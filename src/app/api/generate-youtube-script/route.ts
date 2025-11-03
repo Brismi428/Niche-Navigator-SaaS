@@ -11,7 +11,7 @@ Your goal is to create compelling YouTube video scripts that:
 - Include strategic timestamps for key sections
 - Incorporate clear calls-to-action and engagement prompts
 - Match the specified tone and target audience
-- Are formatted in clean, standard Markdown
+- Are formatted as production-ready HTML
 
 Script Structure Guidelines:
 1. HOOK (0:00-0:15): Attention-grabbing opening that promises value
@@ -30,17 +30,48 @@ Best Practices:
 - Optimize for 8-15 minute videos (YouTube's sweet spot)
 - Add timestamps for easy navigation
 
-Output Format:
-CRITICAL: Output ONLY standard Markdown formatting:
-- Title as H1: # Title Here
-- Timestamp sections as H2: ## 0:00 - Hook
-- Sub-sections as H3: ### Subsection
-- Use **bold** for emphasis and key points
-- Use [VISUAL CUES] in brackets
-- Natural paragraph breaks for speaking sections
-- Write clean, professional Markdown that renders beautifully
+Output Format - CRITICAL HTML FORMATTING RULES:
+You MUST output clean, semantic HTML that renders beautifully for teleprompter use or script reading.
 
-The output should be ready to render with a Markdown parser.`;
+Required HTML structure:
+1. TITLE: <h1>Video Title Here</h1>
+2. TIMESTAMP SECTIONS: <h2>0:00 - Hook</h2>
+3. SUB-SECTIONS: <h3>Key Takeaway</h3>
+4. SPEAKING BLOCKS: <p>Script text here</p>
+5. VISUAL CUES: <p><em>[VISUAL: B-roll description]</em></p>
+6. EMPHASIS: Use <strong>CAPS</strong> for words to emphasize while speaking
+7. Production notes: Use <em> for [VISUAL], [PAUSE], etc.
+
+Example HTML structure:
+"""
+<h1>How to Master Content Creation in 30 Days</h1>
+
+<h2>0:00 - Hook</h2>
+
+<p>Hey what's up! <em>[VISUAL: Energetic opening shot]</em> Did you know that 90% of people struggle with this exact problem? Well today, I'm going to show you the <strong>SOLUTION</strong>.</p>
+
+<h2>0:15 - Introduction</h2>
+
+<p>Welcome back to the channel! If you're new here, I'm [Name] and I help you achieve [benefit]. Today's video is going to be <strong>GAME-CHANGING</strong> because...</p>
+
+<p><em>[VISUAL: Channel logo animation]</em></p>
+
+<h2>1:23 - First Main Point</h2>
+
+<p>Let me break this down for you. The <strong>FIRST</strong> thing you need to understand is...</p>
+
+<h3>Key Takeaway</h3>
+
+<p>This is the crucial point that most people miss.</p>
+"""
+
+IMPORTANT RULES:
+- Output ONLY the HTML content (no <html>, <head>, or <body> tags)
+- Use semantic HTML5 tags
+- Keep HTML clean and minimal (no inline styles or classes)
+- Use <strong> for emphasis and CAPS words
+- Use <em> for production cues like [VISUAL], [PAUSE]
+- The HTML should paste perfectly into Google Docs, Notion, or script reading apps`;
 
 interface GenerateYouTubeScriptRequest {
   topic: string;
@@ -93,13 +124,13 @@ Unique Angle: ${angle}
 
 Distribution Platforms: ${platforms}
 
-Please generate a full YouTube video script in Markdown format that:
+Please generate a full YouTube video script as CLEAN HTML that:
 1. Opens with a powerful hook in the first 5 seconds
 2. Incorporates the target keywords naturally for SEO: ${keywords}
 3. Addresses viewer intent: ${intent}
 4. Uses this unique angle throughout: ${angle}
 5. Includes timestamps for major sections (e.g., 0:00, 1:23, 3:45)
-6. Contains [VISUAL CUES] for B-roll, graphics, or screen recordings
+6. Contains [VISUAL: description] cues for B-roll, graphics, or screen recordings
 7. Has strategic engagement prompts (like, comment, subscribe)
 8. Maintains a conversational, authentic tone
 9. Provides clear, actionable value to viewers
@@ -107,15 +138,30 @@ Please generate a full YouTube video script in Markdown format that:
 
 Target video length: 8-12 minutes
 
-IMPORTANT - Use proper Markdown formatting:
-- Title as # H1
-- Timestamp sections as ## H2 (e.g., ## 0:00 - Hook)
-- Sub-sections as ### H3
-- **Bold** for emphasis
-- [VISUAL CUES] in brackets
-- Natural paragraph breaks
+CRITICAL HTML FORMATTING REQUIREMENTS:
+- Use <h1> for the video title
+- Use <h2> for timestamp sections (e.g., <h2>0:00 - Hook</h2>)
+- Use <h3> for sub-sections
+- Wrap all speaking text in <p> tags
+- Use <strong>CAPS</strong> for words to EMPHASIZE while speaking
+- Use <em>[VISUAL: description]</em> for production notes
+- Use <em>[PAUSE]</em> for pause markers
+- NO wrapper tags (no <html>, <head>, <body>)
+- NO inline styles or CSS classes
+- Output ONLY the content HTML
 
-The script should be ready to record immediately with clear section breaks.`;
+The script should be ready to copy into teleprompter software or Google Docs.
+
+Example output format:
+<h1>Your Video Title Here</h1>
+
+<h2>0:00 - Hook</h2>
+
+<p>Hey what's up! <em>[VISUAL: Energetic opening]</em> Today I'm going to show you something <strong>INCREDIBLE</strong>...</p>
+
+<h2>0:30 - Introduction</h2>
+
+<p>Welcome back! If you're new here, smash that subscribe button...</p>`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);
