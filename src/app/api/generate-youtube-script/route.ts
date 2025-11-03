@@ -11,7 +11,7 @@ Your goal is to create compelling YouTube video scripts that:
 - Include strategic timestamps for key sections
 - Incorporate clear calls-to-action and engagement prompts
 - Match the specified tone and target audience
-- Are formatted as clean, readable prose for easy recording
+- Are formatted in clean, standard Markdown
 
 Script Structure Guidelines:
 1. HOOK (0:00-0:15): Attention-grabbing opening that promises value
@@ -31,17 +31,16 @@ Best Practices:
 - Add timestamps for easy navigation
 
 Output Format:
-CRITICAL: Output ONLY formatted prose - a clean, readable script with:
-- Title at the top (ALL CAPS or emphasized with spacing)
-- Timestamps in plain text (like "0:00 - Hook")
-- TWO blank lines before each major section with timestamps
-- Natural paragraph breaks for each speaking section
-- [VISUAL CUES] in brackets for production notes
-- Section headings on their own lines (NO Markdown symbols like # or **)
-- ONE blank line between speaking paragraphs
-- Display-ready content that can be read directly while recording
+CRITICAL: Output ONLY standard Markdown formatting:
+- Title as H1: # Title Here
+- Timestamp sections as H2: ## 0:00 - Hook
+- Sub-sections as H3: ### Subsection
+- Use **bold** for emphasis and key points
+- Use [VISUAL CUES] in brackets
+- Natural paragraph breaks for speaking sections
+- Write clean, professional Markdown that renders beautifully
 
-DO NOT use Markdown formatting symbols. Write as if creating a finished script with clear visual hierarchy through spacing.`;
+The output should be ready to render with a Markdown parser.`;
 
 interface GenerateYouTubeScriptRequest {
   topic: string;
@@ -94,7 +93,7 @@ Unique Angle: ${angle}
 
 Distribution Platforms: ${platforms}
 
-Please generate a full YouTube video script that:
+Please generate a full YouTube video script in Markdown format that:
 1. Opens with a powerful hook in the first 5 seconds
 2. Incorporates the target keywords naturally for SEO: ${keywords}
 3. Addresses viewer intent: ${intent}
@@ -108,17 +107,15 @@ Please generate a full YouTube video script that:
 
 Target video length: 8-12 minutes
 
-IMPORTANT: Output only formatted prose text with clear visual structure:
-- Title at the top (ALL CAPS or emphasized with spacing)
-- TWO blank lines before each timestamp section
-- Timestamps in plain text format (0:00 - Hook) as section headers
-- Natural paragraph breaks for speaking sections
-- ONE blank line between speaking paragraphs
+IMPORTANT - Use proper Markdown formatting:
+- Title as # H1
+- Timestamp sections as ## H2 (e.g., ## 0:00 - Hook)
+- Sub-sections as ### H3
+- **Bold** for emphasis
 - [VISUAL CUES] in brackets
-- Clear visual hierarchy through strategic spacing
-- Ready for the creator to read directly while recording
+- Natural paragraph breaks
 
-The script should be ready to record immediately with obvious section breaks.`;
+The script should be ready to record immediately with clear section breaks.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);

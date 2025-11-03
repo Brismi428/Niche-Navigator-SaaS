@@ -10,7 +10,7 @@ Your goal is to create comprehensive, well-structured blog posts that:
 - Follow proper blog post structure (introduction, body sections, conclusion)
 - Include actionable takeaways and clear calls-to-action
 - Match the specified tone and target audience
-- Are formatted as clean, readable prose
+- Are formatted in clean, standard Markdown
 
 Guidelines:
 1. Start with an attention-grabbing introduction that hooks the reader
@@ -23,20 +23,17 @@ Guidelines:
 8. Use bullet points and numbered lists for better readability
 
 Output Format:
-CRITICAL: Output ONLY formatted prose - a clean, readable document with:
-- Title in ALL CAPS at the very top
-- THREE blank lines after the title
-- Major section headings in Title Case (capitalize every word)
-- TWO blank lines before each major section heading
-- Sub-section headings with First Word Capitalized
-- ONE blank line before sub-section headings
-- ONE blank line between regular paragraphs
-- Bullet points using "•" or numbers
-- NO Markdown symbols (no #, **, __, etc.)
-- NO HTML tags
+CRITICAL: Output ONLY standard Markdown formatting:
+- Title as H1: # Title Here
+- Major sections as H2: ## Section Heading
+- Sub-sections as H3: ### Subsection Heading
+- Use **bold** for emphasis and key terms
+- Use bullet lists with - or *
+- Use numbered lists with 1. 2. 3.
+- Use > for blockquotes if needed
+- Write clean, professional Markdown that renders beautifully
 
-Create a document that looks professional when copied into Word, Google Docs, or any CMS.
-Use CAPS and Title Case strategically to show hierarchy.`;
+The output should be ready to render with a Markdown parser.`;
 
 interface GenerateBlogRequest {
   topic: string;
@@ -89,39 +86,22 @@ Unique Angle: ${angle}
 
 Target Platforms: ${platforms}
 
-Please generate a complete blog post that:
+Please generate a complete blog post in Markdown format that:
 1. Incorporates the target keywords naturally throughout
 2. Addresses the search intent (${intent})
 3. Uses the unique angle to differentiate the content: ${angle}
-4. Is formatted as clean, readable prose (NO Markdown or HTML formatting)
+4. Is formatted as clean, standard Markdown
 5. Includes an engaging introduction, well-structured body sections, and a compelling conclusion
 6. Provides actionable value to readers
 7. Is optimized for ${platforms}
 
-IMPORTANT - FORMATTING RULES:
-1. Title: ALL CAPS, followed by THREE blank lines
-2. Major sections: "Step 1: Title Case Heading Here", TWO blank lines before
-3. Sub-sections: "Subsection heading here:", ONE blank line before
-4. Paragraphs: ONE blank line between each
-5. Bullet points: Use • symbol
-6. NO Markdown (no #, **, __), NO HTML
-
-Example structure:
-THE ULTIMATE GUIDE TO [TOPIC]
-
-
-[Introduction paragraph]
-
-[Another paragraph]
-
-
-Step 1: Major Section Heading In Title Case
-
-[Content paragraph]
-
-Subsection heading here:
-
-[Content]
+IMPORTANT - Use proper Markdown formatting:
+- Title as # H1
+- Major sections as ## H2
+- Sub-sections as ### H3
+- **Bold** for key terms and emphasis
+- Bullet lists and numbered lists
+- Natural paragraph breaks
 
 The blog post should be approximately 1200-1800 words.`;
 
