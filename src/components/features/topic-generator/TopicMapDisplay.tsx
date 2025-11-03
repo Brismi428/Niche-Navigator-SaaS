@@ -12,7 +12,8 @@ import {
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, FileText, Video } from 'lucide-react';
+import ContentGenerationModal from './ContentGenerationModal';
 
 export interface TopicItem {
   topic: string;
@@ -31,6 +32,11 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
   // State for expandable rows on mobile
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
 
+  // State for content generation modal
+  const [selectedTopic, setSelectedTopic] = useState<TopicItem | null>(null);
+  const [contentType, setContentType] = useState<'blog' | 'youtube' | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   // Toggle row expansion
   const toggleRow = (index: number) => {
     const newExpanded = new Set(expandedRows);
@@ -40,6 +46,13 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
       newExpanded.add(index);
     }
     setExpandedRows(newExpanded);
+  };
+
+  // Handle content generation
+  const handleGenerateContent = (topic: TopicItem, type: 'blog' | 'youtube') => {
+    setSelectedTopic(topic);
+    setContentType(type);
+    setIsModalOpen(true);
   };
 
   // Empty state
@@ -107,7 +120,7 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
                 <TableHead className="min-w-[100px]">Intent</TableHead>
                 <TableHead className="hidden lg:table-cell min-w-[180px]">Angle/Hook</TableHead>
                 <TableHead className="hidden xl:table-cell min-w-[160px]">CTA</TableHead>
-                <TableHead className="md:hidden w-[60px]">Actions</TableHead>
+                <TableHead className="w-[120px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -140,15 +153,37 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
                     <TableCell className="hidden xl:table-cell text-sm text-muted-foreground whitespace-normal">
                       {item.cta}
                     </TableCell>
-                    <TableCell className="md:hidden">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => toggleRow(index)}
-                        aria-label={expandedRows.has(index) ? 'Collapse details' : 'Expand details'}
-                      >
-                        <Eye className="h-4 w-4" />
-                      </Button>
+                    <TableCell>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleGenerateContent(item, 'blog')}
+                          aria-label="Generate blog post"
+                          title="Generate Blog Post"
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleGenerateContent(item, 'youtube')}
+                          aria-label="Generate YouTube script"
+                          title="Generate YouTube Script"
+                        >
+                          <Video className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => toggleRow(index)}
+                          aria-label={expandedRows.has(index) ? 'Collapse details' : 'Expand details'}
+                          title="View Details"
+                          className="md:hidden"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                   {expandedRows.has(index) && (
@@ -177,6 +212,26 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
                             <span className="font-semibold">CTA:</span>
                             <p className="text-muted-foreground mt-1">{item.cta}</p>
                           </div>
+                          <div className="flex gap-2 mt-4">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleGenerateContent(item, 'blog')}
+                              className="flex-1"
+                            >
+                              <FileText className="h-4 w-4 mr-2" />
+                              Blog Post
+                            </Button>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleGenerateContent(item, 'youtube')}
+                              className="flex-1"
+                            >
+                              <Video className="h-4 w-4 mr-2" />
+                              YouTube Script
+                            </Button>
+                          </div>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -187,6 +242,14 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
           </Table>
         </div>
       </CardContent>
+
+      {/* Content Generation Modal */}
+      <ContentGenerationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        topic={selectedTopic}
+        contentType={contentType}
+      />
     </Card>
   );
 }
