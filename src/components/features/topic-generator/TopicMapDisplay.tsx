@@ -1,5 +1,6 @@
 'use client';
 
+import { Fragment, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -10,6 +11,8 @@ import {
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Eye } from 'lucide-react';
 
 export interface TopicItem {
   topic: string;
@@ -25,6 +28,20 @@ interface TopicMapDisplayProps {
 }
 
 export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
+  // State for expandable rows on mobile
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+
+  // Toggle row expansion
+  const toggleRow = (index: number) => {
+    const newExpanded = new Set(expandedRows);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
+    } else {
+      newExpanded.add(index);
+    }
+    setExpandedRows(newExpanded);
+  };
+
   // Empty state
   if (topicMap.length === 0) {
     return (
@@ -84,44 +101,87 @@ export default function TopicMapDisplay({ topicMap }: TopicMapDisplayProps) {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-[20%]">Topic</TableHead>
-                <TableHead className="w-[15%]">Platforms</TableHead>
-                <TableHead className="w-[15%]">Keywords</TableHead>
-                <TableHead className="w-[10%]">Intent</TableHead>
-                <TableHead className="w-[20%]">Angle/Hook</TableHead>
-                <TableHead className="w-[20%]">CTA</TableHead>
+                <TableHead className="min-w-[200px]">Topic</TableHead>
+                <TableHead className="hidden md:table-cell min-w-[120px]">Platforms</TableHead>
+                <TableHead className="hidden lg:table-cell min-w-[140px]">Keywords</TableHead>
+                <TableHead className="min-w-[100px]">Intent</TableHead>
+                <TableHead className="hidden lg:table-cell min-w-[180px]">Angle/Hook</TableHead>
+                <TableHead className="hidden xl:table-cell min-w-[160px]">CTA</TableHead>
+                <TableHead className="md:hidden w-[60px]">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {topicMap.map((item, index) => (
-                <TableRow key={index}>
-                  <TableCell className="font-medium">
-                    {item.topic}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {item.platforms}
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    <div className="flex flex-wrap gap-1">
-                      {item.keywords.split(',').slice(0, 2).map((keyword, i) => (
-                        <Badge key={i} variant="outline" className="text-xs">
-                          {keyword.trim()}
-                        </Badge>
-                      ))}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getIntentColor(item.intent)}>
-                      {item.intent}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm">
-                    {item.angle}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {item.cta}
-                  </TableCell>
-                </TableRow>
+                <Fragment key={index}>
+                  <TableRow>
+                    <TableCell className="font-medium whitespace-normal">
+                      {item.topic}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-sm text-muted-foreground whitespace-normal">
+                      {item.platforms}
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell text-sm whitespace-normal">
+                      <div className="flex flex-wrap gap-1">
+                        {(typeof item.keywords === 'string' ? item.keywords.split(',') : [item.keywords]).map((keyword, i) => (
+                          <Badge key={i} variant="outline" className="text-xs">
+                            {String(keyword).trim()}
+                          </Badge>
+                        ))}
+                      </div>
+                    </TableCell>
+                    <TableCell className="whitespace-normal">
+                      <Badge variant={getIntentColor(item.intent)}>
+                        {item.intent}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell text-sm whitespace-normal">
+                      {item.angle}
+                    </TableCell>
+                    <TableCell className="hidden xl:table-cell text-sm text-muted-foreground whitespace-normal">
+                      {item.cta}
+                    </TableCell>
+                    <TableCell className="md:hidden">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleRow(index)}
+                        aria-label={expandedRows.has(index) ? 'Collapse details' : 'Expand details'}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                  {expandedRows.has(index) && (
+                    <TableRow className="md:hidden bg-muted/50">
+                      <TableCell colSpan={3} className="py-4">
+                        <div className="space-y-3 text-sm">
+                          <div>
+                            <span className="font-semibold">Platforms:</span>
+                            <p className="text-muted-foreground mt-1">{item.platforms}</p>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Keywords:</span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {(typeof item.keywords === 'string' ? item.keywords.split(',') : [item.keywords]).map((keyword, i) => (
+                                <Badge key={i} variant="outline" className="text-xs">
+                                  {String(keyword).trim()}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="font-semibold">Angle/Hook:</span>
+                            <p className="text-muted-foreground mt-1">{item.angle}</p>
+                          </div>
+                          <div>
+                            <span className="font-semibold">CTA:</span>
+                            <p className="text-muted-foreground mt-1">{item.cta}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
               ))}
             </TableBody>
           </Table>

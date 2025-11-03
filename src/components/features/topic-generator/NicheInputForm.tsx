@@ -36,6 +36,9 @@ const formSchema = z.object({
   }).max(500, {
     message: 'Target audience description must be less than 500 characters.',
   }),
+  subNicheIdeas: z.string().max(500, {
+    message: 'Sub-niche ideas must be less than 500 characters.',
+  }).optional(),
   tone: z.string({
     required_error: 'Please select a tone.',
   }),
@@ -57,6 +60,7 @@ export default function NicheInputForm({ onSubmit, isLoading }: NicheInputFormPr
     defaultValues: {
       primaryNiche: '',
       targetAudience: '',
+      subNicheIdeas: '',
       tone: '',
       complexity: '',
     },
@@ -102,6 +106,28 @@ export default function NicheInputForm({ onSubmit, isLoading }: NicheInputFormPr
               </FormControl>
               <FormDescription>
                 Provide details about who you&apos;re creating content for
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="subNicheIdeas"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Initial Sub-Niche Ideas (Optional)</FormLabel>
+              <FormControl>
+                <Textarea
+                  placeholder="e.g., AI chatbots for small business, workflow automation tools, content generation..."
+                  className="min-h-[80px] resize-none"
+                  disabled={isLoading}
+                  {...field}
+                />
+              </FormControl>
+              <FormDescription>
+                Provide specific sub-topics or areas within your niche (optional)
               </FormDescription>
               <FormMessage />
             </FormItem>

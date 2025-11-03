@@ -42,28 +42,25 @@ export default function TopicGeneratorPage() {
   };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">Topic Map Generator</h1>
-        <p className="text-muted-foreground mt-2">
+    <div className="container mx-auto py-8 px-4 max-w-7xl">
+      <div className="mb-8 text-center">
+        <h1 className="text-3xl md:text-4xl font-bold tracking-tight">Topical Map Generator</h1>
+        <p className="text-muted-foreground mt-2 text-sm md:text-base">
           Generate SEO-optimized content strategies tailored to your niche and audience
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column: Input Form */}
-        <div className="space-y-4">
+      {/* Show form only when no results or there's an error */}
+      {(topicMap.length === 0 || error) && (
+        <div className="max-w-2xl mx-auto">
           <NicheInputForm onSubmit={handleSubmit} isLoading={isLoading} />
-        </div>
 
-        {/* Right Column: Results Display */}
-        <div className="space-y-4">
           {/* Loading State */}
           {isLoading && (
-            <div className="flex items-center justify-center min-h-[400px]">
+            <div className="flex items-center justify-center min-h-[200px] mt-6">
               <div className="text-center">
                 <Loader2 className="h-12 w-12 animate-spin text-primary mx-auto mb-4" />
-                <p className="text-sm font-medium">Generating your topic map...</p>
+                <p className="text-sm font-medium">Generating your topical map...</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   This may take a few moments
                 </p>
@@ -73,19 +70,19 @@ export default function TopicGeneratorPage() {
 
           {/* Error State */}
           {error && !isLoading && (
-            <Alert variant="destructive">
+            <Alert variant="destructive" className="mt-6">
               <AlertCircle className="h-4 w-4" />
               <AlertTitle>Error</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
-
-          {/* Results Display */}
-          {!isLoading && !error && (
-            <TopicMapDisplay topicMap={topicMap} />
-          )}
         </div>
-      </div>
+      )}
+
+      {/* Results Display - Full width when topics are generated */}
+      {topicMap.length > 0 && !isLoading && !error && (
+        <TopicMapDisplay topicMap={topicMap} />
+      )}
     </div>
   );
 }
