@@ -43,11 +43,12 @@ Ensure all responses are helpful, clear, actionable, and focused on empowering t
 Proactively suggest SEO enhancements (like LSI keywords, internal linking strategies, E-E-A-T considerations), content structure improvements, and potentially useful tools or resources (mentioning types of tools rather than specific brands unless asked).
 
 CRITICAL JSON OUTPUT RULE:
-You MUST output only a single, valid JSON object. This object must have one root key: 'topics'. The 'topics' key must be an array of 15-20 objects, each with the following keys: topic, platforms, keywords, intent, angle, cta.`;
+You MUST output only a single, valid JSON object. This object must have one root key: 'topics'. The 'topics' key must be an array of 8-12 objects (select the optimal number based on the niche), each with the following keys: topic, platforms, keywords, intent, angle, cta.`;
 
 interface GenerateTopicsRequest {
   primaryNiche: string;
   targetAudience: string;
+  subNicheIdeas?: string;
   tone: string;
   complexity: string;
 }
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
 
     // Parse request body
     const body: GenerateTopicsRequest = await request.json();
-    const { primaryNiche, targetAudience, tone, complexity } = body;
+    const { primaryNiche, targetAudience, subNicheIdeas, tone, complexity } = body;
 
     // Validate required fields
     if (!primaryNiche || !targetAudience || !tone || !complexity) {
@@ -103,10 +104,23 @@ export async function POST(request: NextRequest) {
 
 Primary Niche: ${primaryNiche}
 Target Audience: ${targetAudience}
+${subNicheIdeas ? `Initial Sub-Niche Ideas: ${subNicheIdeas}` : ''}
 Tone: ${tone}
 Complexity Level: ${complexity}
 
-Please provide 15-20 content topic ideas that are SEO-optimized, platform-specific, and actionable. Each topic should include the target platforms, primary keywords, search intent, a unique angle/hook, and a suggested call-to-action.`;
+Please provide 8-12 HIGH-VALUE, SEO-OPTIMIZED content topic ideas that are platform-specific and actionable. Select the optimal number within this range based on the niche depth and audience needs. Focus on the most impactful topics that will drive the best results and establish topical authority.${subNicheIdeas ? ' Consider incorporating and expanding on the sub-niche ideas provided.' : ''}
+
+IMPORTANT REQUIREMENTS FOR EACH TOPIC:
+- Topic: A clear, specific content title
+- Platforms: Target distribution channels (YouTube, Blog, Twitter/X, LinkedIn, TikTok, etc.)
+- Keywords: Provide 4-6 highly-relevant, SEO-optimized keywords including:
+  * Primary keyword (high search volume, relevant to topic)
+  * 2-3 long-tail keywords (lower competition, more specific)
+  * 1-2 LSI keywords (semantically related terms)
+  * Format as comma-separated list
+- Intent: Search intent type (Informational, Navigational, Commercial, or Transactional)
+- Angle: A unique angle or hook that differentiates this content
+- CTA: A specific, actionable call-to-action for the audience`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);
