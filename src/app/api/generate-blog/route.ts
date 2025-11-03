@@ -24,14 +24,15 @@ Guidelines:
 
 Output Format:
 CRITICAL: Output ONLY formatted prose - a clean, readable document with:
-- A title line at the top
+- A title line at the top (use ALL CAPS or add extra spacing)
 - Fully written paragraphs (NO Markdown syntax like # ## ** or HTML tags)
-- Natural spacing between sections
-- Section headings on their own lines
+- Add TWO blank lines before each major section heading for visual separation
+- Section headings on their own lines (consider using title case or slight capitalization)
+- Add ONE blank line between paragraphs
 - Bullet points using simple dashes or numbers
 - Display-ready content that can be copied directly into any platform
 
-DO NOT use Markdown formatting symbols. Write as if creating a finished document, not code.`;
+DO NOT use Markdown formatting symbols. Write as if creating a finished document with clear visual hierarchy through spacing and text formatting (capitalization, blank lines).`;
 
 interface GenerateBlogRequest {
   topic: string;
@@ -93,14 +94,16 @@ Please generate a complete blog post that:
 6. Provides actionable value to readers
 7. Is optimized for ${platforms}
 
-IMPORTANT: Output only formatted prose text with:
-- Title at the top
-- Natural paragraph breaks
-- Section headings on their own lines (no # symbols)
+IMPORTANT: Output only formatted prose text with clear visual hierarchy:
+- Title at the top (ALL CAPS or emphasized with spacing)
+- TWO blank lines before each major section heading
+- Section headings in Title Case on their own lines (no # symbols)
+- ONE blank line between regular paragraphs
 - Simple bullet points using dashes
+- Clear visual structure through strategic spacing
 - Ready to copy and paste into any platform
 
-The blog post should be approximately 1200-1800 words.`;
+The blog post should be approximately 1200-1800 words with clear visual structure.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);

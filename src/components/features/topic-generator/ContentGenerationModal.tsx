@@ -179,7 +179,7 @@ export default function ContentGenerationModal({
                 id="generated-content"
                 value={generatedContent}
                 readOnly
-                className="min-h-[400px] font-mono text-sm"
+                className="min-h-[400px] text-sm whitespace-pre-wrap leading-relaxed"
               />
               <Button onClick={handleClose} variant="default" className="w-full">
                 Close

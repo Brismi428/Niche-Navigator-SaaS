@@ -32,14 +32,16 @@ Best Practices:
 
 Output Format:
 CRITICAL: Output ONLY formatted prose - a clean, readable script with:
-- Title at the top
+- Title at the top (ALL CAPS or emphasized with spacing)
 - Timestamps in plain text (like "0:00 - Hook")
+- TWO blank lines before each major section with timestamps
 - Natural paragraph breaks for each speaking section
 - [VISUAL CUES] in brackets for production notes
 - Section headings on their own lines (NO Markdown symbols like # or **)
+- ONE blank line between speaking paragraphs
 - Display-ready content that can be read directly while recording
 
-DO NOT use Markdown formatting symbols. Write as if creating a finished script document, not code.`;
+DO NOT use Markdown formatting symbols. Write as if creating a finished script with clear visual hierarchy through spacing.`;
 
 interface GenerateYouTubeScriptRequest {
   topic: string;
@@ -106,15 +108,17 @@ Please generate a full YouTube video script that:
 
 Target video length: 8-12 minutes
 
-IMPORTANT: Output only formatted prose text with:
-- Title at the top
-- Timestamps in plain text format (0:00 - Hook)
+IMPORTANT: Output only formatted prose text with clear visual structure:
+- Title at the top (ALL CAPS or emphasized with spacing)
+- TWO blank lines before each timestamp section
+- Timestamps in plain text format (0:00 - Hook) as section headers
 - Natural paragraph breaks for speaking sections
+- ONE blank line between speaking paragraphs
 - [VISUAL CUES] in brackets
-- Section headings on their own lines (no ** or # symbols)
+- Clear visual hierarchy through strategic spacing
 - Ready for the creator to read directly while recording
 
-The script should be ready to record immediately.`;
+The script should be ready to record immediately with obvious section breaks.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);
