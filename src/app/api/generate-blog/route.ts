@@ -10,11 +10,11 @@ Your goal is to create comprehensive, well-structured blog posts that:
 - Follow proper blog post structure (introduction, body sections, conclusion)
 - Include actionable takeaways and clear calls-to-action
 - Match the specified tone and target audience
-- Are formatted in Markdown for easy publishing
+- Are formatted as clean, readable prose
 
 Guidelines:
 1. Start with an attention-grabbing introduction that hooks the reader
-2. Use clear section headings (H2, H3) for scannability
+2. Use clear section headings for scannability
 3. Integrate keywords naturally throughout the content
 4. Include practical examples, tips, or case studies where relevant
 5. Write in an engaging, conversational style that maintains professionalism
@@ -23,7 +23,15 @@ Guidelines:
 8. Use bullet points and numbered lists for better readability
 
 Output Format:
-Provide the complete blog post in Markdown format, ready to publish.`;
+CRITICAL: Output ONLY formatted prose - a clean, readable document with:
+- A title line at the top
+- Fully written paragraphs (NO Markdown syntax like # ## ** or HTML tags)
+- Natural spacing between sections
+- Section headings on their own lines
+- Bullet points using simple dashes or numbers
+- Display-ready content that can be copied directly into any platform
+
+DO NOT use Markdown formatting symbols. Write as if creating a finished document, not code.`;
 
 interface GenerateBlogRequest {
   topic: string;
@@ -66,26 +74,33 @@ export async function POST(request: NextRequest) {
     // Build user prompt
     const userPrompt = `Create a comprehensive, SEO-optimized blog post for the following topic:
 
-**Topic:** ${topic}
+Topic: ${topic}
 
-**Target Keywords:** ${keywords}
+Target Keywords: ${keywords}
 
-**Search Intent:** ${intent}
+Search Intent: ${intent}
 
-**Unique Angle:** ${angle}
+Unique Angle: ${angle}
 
-**Target Platforms:** ${platforms}
+Target Platforms: ${platforms}
 
 Please generate a complete blog post that:
 1. Incorporates the target keywords naturally throughout
 2. Addresses the search intent (${intent})
 3. Uses the unique angle to differentiate the content: ${angle}
-4. Is formatted in clean Markdown with proper headings
+4. Is formatted as clean, readable prose (NO Markdown or HTML formatting)
 5. Includes an engaging introduction, well-structured body sections, and a compelling conclusion
 6. Provides actionable value to readers
 7. Is optimized for ${platforms}
 
-The blog post should be ready to publish and approximately 1200-1800 words.`;
+IMPORTANT: Output only formatted prose text with:
+- Title at the top
+- Natural paragraph breaks
+- Section headings on their own lines (no # symbols)
+- Simple bullet points using dashes
+- Ready to copy and paste into any platform
+
+The blog post should be approximately 1200-1800 words.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);

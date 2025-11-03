@@ -11,15 +11,15 @@ Your goal is to create compelling YouTube video scripts that:
 - Include strategic timestamps for key sections
 - Incorporate clear calls-to-action and engagement prompts
 - Match the specified tone and target audience
-- Are formatted for easy reading during recording
+- Are formatted as clean, readable prose for easy recording
 
 Script Structure Guidelines:
-1. **HOOK (0:00-0:15)**: Attention-grabbing opening that promises value
-2. **INTRO (0:15-0:45)**: Brief introduction, channel reminder, what they'll learn
-3. **CONTENT SECTIONS**: Main value delivery with clear transitions
-4. **ENGAGEMENT PROMPTS**: Strategic asks for likes, comments, subscriptions
-5. **CONCLUSION**: Summary of key points and final CTA
-6. **OUTRO**: End screen suggestions, next video recommendations
+1. HOOK (0:00-0:15): Attention-grabbing opening that promises value
+2. INTRO (0:15-0:45): Brief introduction, channel reminder, what they'll learn
+3. CONTENT SECTIONS: Main value delivery with clear transitions
+4. ENGAGEMENT PROMPTS: Strategic asks for likes, comments, subscriptions
+5. CONCLUSION: Summary of key points and final CTA
+6. OUTRO: End screen suggestions, next video recommendations
 
 Best Practices:
 - Write in a conversational, spoken style (not formal written prose)
@@ -31,7 +31,15 @@ Best Practices:
 - Add timestamps for easy navigation
 
 Output Format:
-Provide a complete, ready-to-record YouTube script with timestamps, visual cues, and engagement prompts.`;
+CRITICAL: Output ONLY formatted prose - a clean, readable script with:
+- Title at the top
+- Timestamps in plain text (like "0:00 - Hook")
+- Natural paragraph breaks for each speaking section
+- [VISUAL CUES] in brackets for production notes
+- Section headings on their own lines (NO Markdown symbols like # or **)
+- Display-ready content that can be read directly while recording
+
+DO NOT use Markdown formatting symbols. Write as if creating a finished script document, not code.`;
 
 interface GenerateYouTubeScriptRequest {
   topic: string;
@@ -74,15 +82,15 @@ export async function POST(request: NextRequest) {
     // Build user prompt
     const userPrompt = `Create a complete, engaging YouTube video script for the following:
 
-**Video Topic:** ${topic}
+Video Topic: ${topic}
 
-**Target Keywords (for SEO):** ${keywords}
+Target Keywords (for SEO): ${keywords}
 
-**Viewer Intent:** ${intent}
+Viewer Intent: ${intent}
 
-**Unique Angle:** ${angle}
+Unique Angle: ${angle}
 
-**Distribution Platforms:** ${platforms}
+Distribution Platforms: ${platforms}
 
 Please generate a full YouTube video script that:
 1. Opens with a powerful hook in the first 5 seconds
@@ -98,7 +106,15 @@ Please generate a full YouTube video script that:
 
 Target video length: 8-12 minutes
 
-The script should be ready for the creator to record immediately.`;
+IMPORTANT: Output only formatted prose text with:
+- Title at the top
+- Timestamps in plain text format (0:00 - Hook)
+- Natural paragraph breaks for speaking sections
+- [VISUAL CUES] in brackets
+- Section headings on their own lines (no ** or # symbols)
+- Ready for the creator to read directly while recording
+
+The script should be ready to record immediately.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);

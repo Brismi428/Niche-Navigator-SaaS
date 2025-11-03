@@ -181,14 +181,9 @@ export default function ContentGenerationModal({
                 readOnly
                 className="min-h-[400px] font-mono text-sm"
               />
-              <div className="flex gap-2">
-                <Button onClick={handleGenerate} variant="outline" className="flex-1">
-                  Regenerate
-                </Button>
-                <Button onClick={handleClose} variant="default" className="flex-1">
-                  Done
-                </Button>
-              </div>
+              <Button onClick={handleClose} variant="default" className="w-full">
+                Close
+              </Button>
             </div>
           )}
         </div>
