@@ -175,12 +175,15 @@ export default function ContentGenerationModal({
                   )}
                 </Button>
               </div>
-              <Textarea
-                id="generated-content"
-                value={generatedContent}
-                readOnly
-                className="min-h-[400px] text-sm whitespace-pre-wrap leading-relaxed"
-              />
+              <div className="relative">
+                <div
+                  id="generated-content"
+                  className="min-h-[400px] max-h-[600px] overflow-y-auto p-6 border rounded-md bg-background leading-relaxed whitespace-pre-wrap select-text"
+                  style={{ fontFamily: 'Georgia, serif', fontSize: '15px', lineHeight: '1.8' }}
+                >
+                  {generatedContent}
+                </div>
+              </div>
               <Button onClick={handleClose} variant="default" className="w-full">
                 Close
               </Button>

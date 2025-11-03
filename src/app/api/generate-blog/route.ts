@@ -24,15 +24,19 @@ Guidelines:
 
 Output Format:
 CRITICAL: Output ONLY formatted prose - a clean, readable document with:
-- A title line at the top (use ALL CAPS or add extra spacing)
-- Fully written paragraphs (NO Markdown syntax like # ## ** or HTML tags)
-- Add TWO blank lines before each major section heading for visual separation
-- Section headings on their own lines (consider using title case or slight capitalization)
-- Add ONE blank line between paragraphs
-- Bullet points using simple dashes or numbers
-- Display-ready content that can be copied directly into any platform
+- Title in ALL CAPS at the very top
+- THREE blank lines after the title
+- Major section headings in Title Case (capitalize every word)
+- TWO blank lines before each major section heading
+- Sub-section headings with First Word Capitalized
+- ONE blank line before sub-section headings
+- ONE blank line between regular paragraphs
+- Bullet points using "•" or numbers
+- NO Markdown symbols (no #, **, __, etc.)
+- NO HTML tags
 
-DO NOT use Markdown formatting symbols. Write as if creating a finished document with clear visual hierarchy through spacing and text formatting (capitalization, blank lines).`;
+Create a document that looks professional when copied into Word, Google Docs, or any CMS.
+Use CAPS and Title Case strategically to show hierarchy.`;
 
 interface GenerateBlogRequest {
   topic: string;
@@ -94,16 +98,32 @@ Please generate a complete blog post that:
 6. Provides actionable value to readers
 7. Is optimized for ${platforms}
 
-IMPORTANT: Output only formatted prose text with clear visual hierarchy:
-- Title at the top (ALL CAPS or emphasized with spacing)
-- TWO blank lines before each major section heading
-- Section headings in Title Case on their own lines (no # symbols)
-- ONE blank line between regular paragraphs
-- Simple bullet points using dashes
-- Clear visual structure through strategic spacing
-- Ready to copy and paste into any platform
+IMPORTANT - FORMATTING RULES:
+1. Title: ALL CAPS, followed by THREE blank lines
+2. Major sections: "Step 1: Title Case Heading Here", TWO blank lines before
+3. Sub-sections: "Subsection heading here:", ONE blank line before
+4. Paragraphs: ONE blank line between each
+5. Bullet points: Use • symbol
+6. NO Markdown (no #, **, __), NO HTML
 
-The blog post should be approximately 1200-1800 words with clear visual structure.`;
+Example structure:
+THE ULTIMATE GUIDE TO [TOPIC]
+
+
+[Introduction paragraph]
+
+[Another paragraph]
+
+
+Step 1: Major Section Heading In Title Case
+
+[Content paragraph]
+
+Subsection heading here:
+
+[Content]
+
+The blog post should be approximately 1200-1800 words.`;
 
     // Call Gemini API
     const result = await model.generateContent(userPrompt);
