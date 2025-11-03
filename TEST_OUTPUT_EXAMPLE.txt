@@ -1,0 +1,95 @@
+EXPECTED OUTPUT FORMAT - BLOG POST EXAMPLE
+===========================================
+
+This document shows what the generated blog post should look like with the updated formatting rules.
+
+---
+
+THE ULTIMATE GUIDE TO CREATING PROFITABLE ONLINE COURSES
+
+
+
+Starting an online course business can transform your expertise into a sustainable income stream. Whether you're a seasoned professional or a passionate hobbyist, creating and selling online courses allows you to reach a global audience while building passive income. In this comprehensive guide, we'll walk you through every step of creating, launching, and scaling a profitable online course business.
+
+
+
+Step 1: Find And Validate Your Profitable Course Idea
+
+The foundation of any successful online course is choosing the right topic. Your course idea should sit at the intersection of your expertise, market demand, and student willingness to pay.
+
+Identify your expertise:
+
+Start by listing all the skills, knowledge, and experiences you possess. Consider your professional background, hobbies, and unique life experiences. The best course topics often come from problems you've personally solved or skills you've developed over years of practice.
+
+How to validate your idea:
+
+• Search for existing courses in your niche to gauge competition and demand
+• Join online communities and forums to understand what problems people are struggling with
+• Conduct surveys or interviews with potential students
+• Look at keyword search volumes using tools like Google Trends
+• Analyze social media discussions around your topic
+
+
+
+Step 2: Design Your Course Structure And Content
+
+Once you've validated your idea, it's time to map out your course structure. A well-organized course keeps students engaged and helps them achieve their learning goals.
+
+Creating your curriculum:
+
+Break down your course into logical modules that build on each other. Each module should focus on one main concept or skill, with lessons that progressively develop understanding.
+
+Content formats to consider:
+
+• Video lectures (the most popular format)
+• Downloadable worksheets and templates
+• Quizzes and assessments
+• Community discussion forums
+• Live Q&A sessions
+
+
+
+Step 3: Create High-Quality Course Content
+
+Quality content is what transforms a simple idea into a valuable learning experience. You don't need expensive equipment to start, but you do need clear audio and video.
+
+Essential equipment:
+
+• A decent microphone (USB microphones start at $50-100)
+• Screen recording software (Loom, Camtasia, or OBS Studio)
+• A quiet recording space
+• Good lighting (natural light or affordable ring lights)
+
+Production tips:
+
+Record in short, focused segments rather than long lectures. Students retain information better with 5-10 minute videos. Use on-screen graphics, animations, and real-world examples to reinforce key concepts.
+
+
+
+Ready to launch your course? The next step is choosing the right platform and pricing strategy. With proper validation, structured content, and quality production, you're well on your way to building a thriving online course business.
+
+Remember: Your first course doesn't need to be perfect. Start with a minimum viable product, gather student feedback, and improve over time. The most important step is getting started today.
+
+---
+
+KEY FORMATTING RULES APPLIED:
+1. Title in ALL CAPS with THREE blank lines after
+2. Major sections using "Step X: Title Case Heading" with TWO blank lines before
+3. Sub-sections with "Subsection heading:" with ONE blank line before
+4. ONE blank line between regular paragraphs
+5. Bullet points using • symbol
+6. NO Markdown symbols (no #, **, __, etc.)
+7. NO HTML tags
+
+This creates a clean, professional document that can be copied directly into:
+- WordPress
+- Medium
+- Google Docs
+- Microsoft Word
+- Any CMS or text editor
+
+The visual hierarchy is created through:
+- CAPITALIZATION (for title)
+- Title Case With Structure (Step 1: format for major sections)
+- Subsection colons: (for minor headings)
+- Strategic spacing (blank lines)
