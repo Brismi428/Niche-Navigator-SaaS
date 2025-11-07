@@ -12,7 +12,7 @@ const faqs = [
   },
   {
     question: "What if I don't like the content?",
-    answer: 'Regenerate with one click. Adjust tone, complexity, or provide more specific guidance. Unlimited generations.',
+    answer: "Regenerate with one click. Adjust tone, complexity, or provide more specific guidance. Unlimited generations.",
   },
   {
     question: 'Can I customize the output?',
@@ -64,7 +64,7 @@ export function FAQSection() {
               Still have questions?
             </h3>
             <p className="text-muted-foreground mb-6">
-              Can't find the answer you're looking for? Our support team is here to help.
+              Can&apos;t find the answer you&apos;re looking for? Our support team is here to help.
             </p>
             <a
               href="/contact"
