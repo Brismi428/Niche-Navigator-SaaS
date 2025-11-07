@@ -13,48 +13,45 @@ export function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center rounded-full border px-4 py-1.5 text-sm font-medium mb-8 animate-fade-in">
             <span className="mr-2">🚀</span>
-            New: Advanced Analytics Dashboard
+            New: AI-Powered YouTube Script Generator
             <ArrowRight className="ml-2 h-4 w-4" />
           </div>
 
           {/* Main headline */}
           <h1 className="text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl mb-6 animate-fade-in">
-            Build Your{' '}
+            From Audience to Published Content in{' '}
             <span className="gradient-text">
-              SaaS Application
-            </span>{' '}
-            Faster Than Ever
+              10 Minutes
+            </span>
           </h1>
 
           {/* Subtitle */}
           <p className="mx-auto max-w-2xl text-lg text-muted-foreground sm:text-xl mb-10 animate-fade-in">
-            Complete SaaS foundation with authentication, payments, analytics, and API management. 
-            Deploy in minutes, not months.
+            AI-powered content strategies + production-ready blog posts + YouTube scripts. Tailored to your exact audience, delivered instantly.
           </p>
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16 animate-fade-in">
             <Button size="lg" className="text-lg px-8 py-6" asChild>
-              <Link href="/signup">
-                Get Started Free
+              <Link href="/dashboard/generator">
+                Generate Your Content Strategy Free
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-              <Link href="#demo">
+              <Link href="#how-it-works">
                 <Play className="mr-2 h-5 w-5" />
-                Watch Demo
+                See How It Works
               </Link>
             </Button>
           </div>
 
           {/* Social proof */}
-          <div className="animate-fade-in">
+          {/* <div className="animate-fade-in">
             <p className="text-sm text-muted-foreground mb-6">
               Trusted by 10,000+ developers and growing
             </p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              {/* Placeholder for company logos */}
               <div className="h-8 w-24 bg-muted rounded flex items-center justify-center text-xs font-medium">
                 Company A
               </div>
@@ -68,7 +65,7 @@ export function HeroSection() {
                 Company D
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
 

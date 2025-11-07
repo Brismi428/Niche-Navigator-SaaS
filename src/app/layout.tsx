@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     template: `%s | ${APP_CONFIG.name}`,
   },
   description: APP_CONFIG.description,
-  keywords: ["SaaS", "Next.js", "React", "TypeScript", "Tailwind CSS"],
+  keywords: ["AI content generation", "content strategy", "blog post generator", "YouTube script generator", "audience targeting", "content marketing", "AI writing tool"],
   authors: [{ name: APP_CONFIG.author }],
   creator: APP_CONFIG.author,
   openGraph: {

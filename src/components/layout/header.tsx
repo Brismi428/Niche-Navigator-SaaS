@@ -43,7 +43,7 @@ export function Header() {
                   <Link href="/login">Sign In</Link>
                 </Button>
                 <Button asChild>
-                  <Link href="/signup">Get Started</Link>
+                  <Link href="/dashboard/generator">Start Free Trial</Link>
                 </Button>
               </>
             )
@@ -86,7 +86,7 @@ export function Header() {
                         <Link href="/login">Sign In</Link>
                       </Button>
                       <Button className="w-full" asChild>
-                        <Link href="/signup">Get Started</Link>
+                        <Link href="/dashboard/generator">Start Free Trial</Link>
                       </Button>
                     </>
                   )

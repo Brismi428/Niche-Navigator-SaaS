@@ -1,30 +1,42 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, CreditCard, BarChart3, Zap } from 'lucide-react';
+import { Target, FileText, Video, DollarSign, Share2, Sparkles } from 'lucide-react';
 
 const features = [
   {
-    icon: Shield,
-    title: 'Authentication & Security',
-    description: 'Complete user management with OAuth, 2FA, and enterprise-grade security features built-in.',
-    features: ['OAuth Integration', 'Two-Factor Authentication', 'Role-Based Access', 'Session Management'],
+    icon: Target,
+    title: 'Audience-Targeted Strategy',
+    description: 'Generate 10 strategic content topics based on your niche, demographics, and pain points. No generic suggestions.',
+    features: ['Niche-Specific Topics', 'Demographic Targeting', 'Pain Point Analysis', 'Strategic Planning'],
   },
   {
-    icon: CreditCard,
-    title: 'Payment Processing',
-    description: 'Stripe integration with subscription management, invoicing, and tax compliance out of the box.',
-    features: ['Subscription Billing', 'One-time Payments', 'Tax Compliance', 'Invoice Generation'],
+    icon: FileText,
+    title: 'Production-Ready Blog Posts',
+    description: 'Complete 1,500-2,000 word blog posts with proper HTML formatting, SEO optimization, and CTAs. Copy and publish.',
+    features: ['1,500-2,000 Words', 'HTML Formatted', 'SEO Optimized', 'Built-in CTAs'],
   },
   {
-    icon: BarChart3,
-    title: 'Analytics & Insights',
-    description: 'Comprehensive dashboard with user analytics, revenue tracking, and performance metrics.',
-    features: ['User Analytics', 'Revenue Tracking', 'Performance Metrics', 'Custom Reports'],
+    icon: Video,
+    title: 'Film-Ready YouTube Scripts',
+    description: 'Full scripts with timestamps, B-roll suggestions, visual cues, and engagement hooks. Hand it to your editor.',
+    features: ['Timestamps Included', 'B-roll Suggestions', 'Visual Cues', 'Engagement Hooks'],
   },
   {
-    icon: Zap,
-    title: 'API Management',
-    description: 'RESTful APIs with rate limiting, authentication, and comprehensive documentation.',
-    features: ['Rate Limiting', 'API Authentication', 'Auto Documentation', 'Webhook Support'],
+    icon: DollarSign,
+    title: 'Monetization Built-In',
+    description: 'Every piece includes strategic CTAs, affiliate opportunities, and lead magnets. Content that converts.',
+    features: ['Strategic CTAs', 'Affiliate Placements', 'Lead Magnets', 'Conversion Focus'],
+  },
+  {
+    icon: Share2,
+    title: 'Multi-Platform Strategy',
+    description: 'Blog, YouTube, LinkedIn, Twitter/X - get platform-specific recommendations for maximum reach.',
+    features: ['Blog Optimization', 'YouTube Scripts', 'LinkedIn Posts', 'Twitter/X Threads'],
+  },
+  {
+    icon: Sparkles,
+    title: 'Brand Voice Control',
+    description: 'Set your tone (professional, casual, educational) and complexity level. AI adapts to your brand.',
+    features: ['Tone Selection', 'Complexity Control', 'Brand Consistency', 'Style Customization'],
   },
 ];
 
@@ -34,11 +46,11 @@ export function FeaturesSection() {
       <div className="container">
         <div className="mx-auto max-w-2xl text-center mb-16">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl mb-4">
-            Everything You Need to Build a{' '}
-            <span className="gradient-text">Modern SaaS</span>
+            Everything You Need for{' '}
+            <span className="gradient-text">Content That Converts</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Skip the boilerplate and focus on your unique features. Our foundation includes all the essentials.
+            AI-powered content creation that understands your audience, matches your brand, and drives results.
           </p>
         </div>
 
@@ -79,18 +91,18 @@ export function FeaturesSection() {
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              'TypeScript Support',
-              'Responsive Design',
-              'Dark Mode',
-              'Email Templates',
-              'File Upload',
-              'Database Integration',
-              'Caching Layer',
-              'Error Tracking',
-              'Performance Monitoring',
-              'SEO Optimization',
-              'i18n Ready',
-              'Component Library',
+              'Keyword Research',
+              'Competitor Analysis',
+              'Content Calendar',
+              'Topic Clustering',
+              'Engagement Optimization',
+              'Readability Scoring',
+              'Meta Descriptions',
+              'Social Media Snippets',
+              'Content Repurposing',
+              'A/B Testing Ideas',
+              'Analytics Integration',
+              'Export to Multiple Formats',
             ].map((feature) => (
               <div key={feature} className="flex items-center p-4 rounded-lg border bg-card">
                 <div className="h-2 w-2 rounded-full bg-primary mr-3" />

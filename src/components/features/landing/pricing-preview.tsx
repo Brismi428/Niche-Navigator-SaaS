@@ -5,39 +5,35 @@ import Link from 'next/link';
 
 const pricingTiers = [
   {
-    name: 'Free',
-    price: 0,
-    description: 'Perfect for getting started and small projects',
+    name: 'Creator',
+    price: 149,
+    description: 'Perfect for individual content creators',
     features: [
-      'Up to 1,000 users',
-      'Basic analytics',
-      'Community support',
-      'Core API access',
-      'Standard templates',
-    ],
-    limitations: [
-      'Limited API calls',
-      'Basic support',
-    ],
-    cta: 'Get Started',
-    popular: false,
-  },
-  {
-    name: 'Pro',
-    price: 29,
-    description: 'Best for growing businesses and teams',
-    features: [
-      'Up to 10,000 users',
-      'Advanced analytics',
-      'Priority support',
-      'Full API access',
-      'Premium templates',
-      'Custom branding',
-      'Team collaboration',
-      'Advanced security',
+      'Unlimited content strategies',
+      '30 blog posts per month',
+      '30 YouTube scripts per month',
+      'Export to Google Docs',
+      'All features included',
     ],
     limitations: [],
     cta: 'Start Free Trial',
+    ctaLink: '/dashboard/generator',
+    popular: false,
+  },
+  {
+    name: 'Agency',
+    price: 399,
+    description: 'Best for agencies and teams managing multiple clients',
+    features: [
+      'Everything in Creator',
+      'Unlimited generations',
+      'Client workspaces (coming soon)',
+      'White-label branding (coming soon)',
+      'Priority support',
+    ],
+    limitations: [],
+    cta: 'Contact Sales',
+    ctaLink: '/contact',
     popular: true,
   },
   {
@@ -45,17 +41,15 @@ const pricingTiers = [
     price: null,
     description: 'Custom solutions for large organizations',
     features: [
-      'Unlimited users',
-      'Custom analytics',
-      'Dedicated support',
-      'White-label solution',
+      'Everything in Agency',
       'Custom integrations',
-      'SSO & SAML',
-      'Custom SLA',
-      'Advanced compliance',
+      'Dedicated account manager',
+      'SLA guarantees',
+      'Volume discounts',
     ],
     limitations: [],
     cta: 'Contact Sales',
+    ctaLink: '/contact',
     popular: false,
   },
 ];
@@ -70,7 +64,7 @@ export function PricingPreview() {
             <span className="gradient-text">Pricing</span>
           </h2>
           <p className="text-lg text-muted-foreground">
-            Choose the plan that fits your needs. All plans include our core features with 14-day free trial.
+            Choose the plan that fits your content creation needs. Start with a 14-day free trial.
           </p>
         </div>
 
@@ -104,12 +98,12 @@ export function PricingPreview() {
               </CardHeader>
 
               <CardContent>
-                <Button 
+                <Button
                   className={`w-full mb-6 ${tier.popular ? 'bg-primary hover:bg-primary/90' : ''}`}
                   variant={tier.popular ? 'default' : 'outline'}
                   asChild
                 >
-                  <Link href={tier.name === 'Enterprise' ? '/contact' : '/subscriptions'}>
+                  <Link href={tier.ctaLink}>
                     {tier.cta}
                   </Link>
                 </Button>
@@ -133,36 +127,6 @@ export function PricingPreview() {
           ))}
         </div>
 
-        {/* FAQ section */}
-        <div className="mt-20 text-center">
-          <h3 className="text-xl font-semibold mb-4">Frequently Asked Questions</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto text-left">
-            <div>
-              <h4 className="font-medium mb-2">Can I change plans anytime?</h4>
-              <p className="text-sm text-muted-foreground">
-                Yes, you can upgrade or downgrade your plan at any time. Changes take effect immediately.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">What payment methods do you accept?</h4>
-              <p className="text-sm text-muted-foreground">
-                We accept all major credit cards, PayPal, and bank transfers for enterprise plans.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Is there a free trial?</h4>
-              <p className="text-sm text-muted-foreground">
-                Yes, all paid plans come with a 14-day free trial. No credit card required.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-medium mb-2">Do you offer refunds?</h4>
-              <p className="text-sm text-muted-foreground">
-                We offer a 30-day money-back guarantee on all paid plans, no questions asked.
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

@@ -2,8 +2,8 @@ import { SubscriptionTier } from './types';
 
 // App configuration
 export const APP_CONFIG = {
-  name: 'Niche Navigator',
-  description: 'The fastest way to build and deploy your SaaS application',
+  name: 'Niche Navigator - AI-Powered Content Strategy & Generation',
+  description: 'Generate audience-targeted content strategies, blog posts, and YouTube scripts in minutes. Production-ready content tailored to your niche.',
   url: process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
   version: '1.0.0',
   author: 'Niche Navigator Team',
